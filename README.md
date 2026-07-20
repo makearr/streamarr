@@ -30,7 +30,7 @@ Streamarr looks like a **Newznab indexer** and a **SABnzbd download client** to 
 # docker-compose.yml
 services:
   streamarr:
-    image: streamarr:latest   # build: docker build -t streamarr:latest .
+    image: makearr/streamarr:latest   # build: docker build -t streamarr:latest .
     container_name: streamarr
     restart: unless-stopped   # required for yt-dlp self-update restarts
     ports:
