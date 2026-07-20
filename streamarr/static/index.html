@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streamarr</title>
+<link rel="icon" href="/static/logo.svg">
+<link rel="stylesheet" href="/static/app.css?v={{V}}">
+</head>
+<body>
+<div id="auth-overlay" class="auth-overlay hidden">
+  <form id="auth-form" class="auth-card">
+    <div class="auth-logo"><span class="logo-badge"><img src="/static/logo.svg" alt=""></span> Streamarr</div>
+    <h2 id="auth-title">Sign in</h2>
+    <label>Username <input id="auth-user" autocomplete="username" required></label>
+    <label>Password <input id="auth-pass" type="password" autocomplete="current-password" required></label>
+    <div id="auth-error" class="auth-error hidden"></div>
+    <button type="submit" class="btn accent" id="auth-submit">Sign in</button>
+  </form>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><span class="logo-badge"><img src="/static/logo.svg" alt="Streamarr"></span><span class="brand-name">Streamarr</span></div>
+    <nav id="nav">
+      <a href="#dashboard" data-page="dashboard"><span class="ico">◈</span><span class="lbl">Dashboard</span></a>
+      <a href="#queue" data-page="queue"><span class="ico">≡</span><span class="lbl">Queue</span></a>
+      <a href="#subscriptions" data-page="subscriptions"><span class="ico">↻</span><span class="lbl">Subscriptions</span></a>
+      <a href="#search" data-page="search"><span class="ico">⌕</span><span class="lbl">Search</span></a>
+      <a href="#indexers" data-page="indexers"><span class="ico">☰</span><span class="lbl">Indexers</span></a>
+      <a href="#instances" data-page="instances"><span class="ico">⇄</span><span class="lbl">Instances</span></a>
+      <a href="#stats" data-page="stats"><span class="ico">▤</span><span class="lbl">Statistics</span></a>
+      <a href="#settings" data-page="settings"><span class="ico">⚙</span><span class="lbl">Settings</span></a>
+      <a href="#logs" data-page="logs"><span class="ico">≣</span><span class="lbl">Logs</span></a>
+      <a href="#system" data-page="system"><span class="ico">ℹ</span><span class="lbl">System</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="logout" class="link-btn">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="theme-switch corner" title="Theme">
+      <button data-theme="light" title="Light">☀</button>
+      <button data-theme="auto" title="Follow system">◐</button>
+      <button data-theme="dark" title="Dark">☾</button>
+    </div>
+    <div id="banner" class="banner hidden"></div>
+    <div id="page" class="page"></div>
+  </main>
+
+  <footer class="statusbar">
+    <span id="status-dot" class="dot"></span>
+    <span id="status-text">Idle</span>
+    <span class="spacer"></span>
+    <span id="status-backoff" class="pill warn hidden"></span>
+    <span id="status-speed" class="pill hidden"></span>
+    <span id="status-version" class="dim"></span>
+  </footer>
+</div>
+<script src="/static/app.js?v={{V}}"></script>
+</body>
+</html>

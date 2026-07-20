@@ -1,0 +1,15 @@
+services:
+  streamarr:
+    image: streamarr:latest
+    container_name: streamarr
+    ports:
+      - "8585:8585"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=022
+      - TZ=Europe/Berlin
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+    restart: unless-stopped
