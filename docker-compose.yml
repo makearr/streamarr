@@ -1,6 +1,6 @@
 services:
   streamarr:
-    image: streamarr:latest
+    image: makearr/streamarr:latest
     container_name: streamarr
     ports:
       - "8585:8585"
