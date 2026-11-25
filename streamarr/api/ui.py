@@ -352,6 +352,7 @@ def site_presets():
         "mediathek": {"name": "Mediathek (all German broadcasters)", "hint": "Live search across ARD/ZDF/… via MediathekViewWeb."},
         "ard": {"name": "ARD (direct)", "hint": "Direct search against the ARD Mediathek API (MediathekViewWeb fallback)."},
         "zdf": {"name": "ZDF (direct)", "hint": "Direct search against the ZDF Mediathek API (MediathekViewWeb fallback)."},
+        "3cat": {"name": "3cat (Catalan public TV)", "hint": "Direct 3cat API search; downloads via yt-dlp. Some content is geo-restricted to Spain."},
         "site": {"name": "Streaming site (yt-dlp)", "hint": "Preset-based generic provider."},
     }, "sites": SITE_PRESETS,
     "categories": [[2000, "Movies"], [3000, "Audio / Music"], [3010, "Audio / MP3"],
@@ -455,7 +456,7 @@ def save_indexers(body: list = Body(...)):
         if iid in seen:
             raise HTTPException(400, f"Duplicate indexer id '{iid}'")
         seen.add(iid)
-        if idx.get("provider") not in ("youtube", "mediathek", "ard", "zdf", "site"):
+        if idx.get("provider") not in ("youtube", "mediathek", "ard", "zdf", "3cat", "site"):
             raise HTTPException(400, f"Unknown provider on '{iid}'")
         idx = config._merge(config.INDEXER_DEFAULTS, idx)
     merged = [config._merge(config.INDEXER_DEFAULTS, i) for i in body]

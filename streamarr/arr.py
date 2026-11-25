@@ -217,23 +217,52 @@ def _title_match(a, b):
     return len(ta & tb) / max(1, min(len(ta), len(tb))) >= 0.6
 
 
+def _cached_series(c, inst):
+    """All series on the arr, with a 5-minute series cache."""
+    base = config.normalize_url(inst["url"])
+    cached = _series_cache.get(base)
+    if not cached or time.time() - cached[0] > 300:
+        r = c.get("/series")
+        r.raise_for_status()
+        cached = (time.time(), r.json())
+        _series_cache[base] = cached
+    return cached[1]
+
+
 def _series_episodes(inst, series_q):
     """(series, episodes) for a series matched by title, with a 5-minute series cache."""
-    base = config.normalize_url(inst["url"])
     with _client(inst) as c:
-        cached = _series_cache.get(base)
-        if not cached or time.time() - cached[0] > 300:
-            r = c.get("/series")
-            r.raise_for_status()
-            cached = (time.time(), r.json())
-            _series_cache[base] = cached
-        series = next((s for s in cached[1] if _title_match(s.get("title"), series_q)), None)
+        series = next((s for s in _cached_series(c, inst) if _title_match(s.get("title"), series_q)), None)
         if not series:
             log.info("Arr lookup: no series on %s matches '%s'", inst["name"], series_q)
             return None, []
         r = c.get("/episode", params={"seriesId": series["id"]})
         r.raise_for_status()
         return series, r.json()
+
+
+def tvdb_id(series_q):
+    """TheTVDB id of the Sonarr series named `series_q`. An exact title or alternate title wins;
+    a fuzzy title match is used only when it is the sole candidate."""
+    exact, fuzzy = [], []
+    for inst in config.get()["instances"]:
+        if not inst.get("enabled") or inst["type"] != "sonarr":
+            continue
+        with _client(inst) as c:
+            series_list = _cached_series(c, inst)
+        for s in series_list:
+            names = [s.get("title")] + [a.get("title") for a in s.get("alternateTitles") or []]
+            if _norm(series_q) and any(_norm(n) == _norm(series_q) for n in names):
+                exact.append(s)
+            elif _title_match(s.get("title"), series_q):
+                fuzzy.append(s)
+    if exact:
+        return exact[0].get("tvdbId") or None
+    if len(fuzzy) > 1:
+        log.warning("Arr lookup: '%s' fuzzily matches %d series (%s) — not guessing",
+                    series_q, len(fuzzy), ", ".join(s.get("title", "?") for s in fuzzy))
+        return None
+    return fuzzy[0].get("tvdbId") if fuzzy else None
 
 
 def find_episode(inst, series_q, season, ep):

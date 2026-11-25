@@ -2,6 +2,9 @@
 
 Versioning: `MAJOR.MINOR.PATCH.HOTFIX` — the first two numbers only change for deliberate milestones.
 
+## Unreleased
+- New provider: 3cat (Catalan public broadcaster) — direct program search over the 3cat API, season-aware (`S10E54` titles), latest-videos feed for arr tests; English arr titles resolved via per-indexer aliases or Wikidata (TVDB id)
+
 ## 1.1.4.0
 - Security: closed an account-takeover hole — /ui/auth/setup now requires a valid session when an account already exists
 - Fixed the unlabeled Start-now button on the Subscriptions page (missing quote swallowed the label)

@@ -33,7 +33,7 @@ function makeSortable(table, rows, renderRow, tbody) {
     tbody.dispatchEvent(new Event("rewire"));
   });
 }
-const PROVIDER_LABEL = p => ({youtube:"YouTube", mediathek:"Mediathek", ard:"ARD", zdf:"ZDF", site:"Site", manual:"Manual"}[p] || p);
+const PROVIDER_LABEL = p => ({youtube:"YouTube", mediathek:"Mediathek", ard:"ARD", zdf:"ZDF", "3cat":"3cat", site:"Site", manual:"Manual"}[p] || p);
 
 async function api(path, opts = {}) {
   if (opts.json) { opts.body = JSON.stringify(opts.json); opts.headers = {"Content-Type": "application/json"}; opts.method = opts.method || "POST"; }
@@ -583,7 +583,7 @@ pages.indexers = async () => {
       if (sp && sp.audio_format) q.audio_format = sp.audio_format;
       idxs.push({id: "", name: c.name, provider: c.provider, site_preset: c.preset, search_template: "",
         media: (sp && sp.media) || "video", naming: c.provider === "youtube" ? "arr" : c.provider === "site" ? "absolute" : "auto",
-        categories: (sp && sp.categories) || (["mediathek","ard","zdf"].includes(c.provider) ? [5000, 2000] : [5000]),
+        categories: (sp && sp.categories) || (["mediathek","ard","zdf","3cat"].includes(c.provider) ? [5000, 2000] : [5000]),
         enabled: true, broad_search: false, channels: [], quality: q});
       $("#i-picker").classList.add("hidden"); render();
     });
@@ -621,6 +621,9 @@ pages.indexers = async () => {
           <textarea data-f="channels" rows="4">${esc((x.channels||[]).map(c => c.title + " | " + c.url).join("\n"))}</textarea></label>
         <label class="field" style="max-width:100%"><span>Subscriptions — one per line: <i>Title | URL</i>. New releases are downloaded automatically (existing backlog is skipped on the first check)</span>
           <textarea data-f="subscriptions" rows="3">${esc((x.subscriptions||[]).map(c => c.title + " | " + c.url).join("\n"))}</textarea></label>` : ""}
+      ${x.provider === "3cat" ? `
+        <label class="field" style="max-width:100%"><span>Title aliases — one per line: <i>Sonarr title = 3cat title</i>. Optional: Catalan titles are otherwise looked up on Wikidata via TheTVDB id</span>
+          <textarea data-f="aliases" rows="3">${esc((x.aliases||[]).map(a => a.sonarr + " = " + a.threecat).join("\n"))}</textarea></label>` : ""}
       <button class="btn danger" data-del="${n}">Delete indexer</button>
     </div>`;
     }).join("") || `<div class="panel empty">No indexers yet — click "Add indexer" and pick a source.</div>`;
@@ -647,6 +650,7 @@ pages.indexers = async () => {
     $$("[data-f]", p).forEach(el => {
       const f = el.dataset.f;
       if (f === "channels" || f === "subscriptions") x[f] = el.value.split("\n").map(l => l.split("|")).filter(a => a.length === 2).map(([t, u]) => ({title: t.trim(), url: u.trim()}));
+      else if (f === "aliases") x[f] = el.value.split("\n").map(l => { const i = l.indexOf("="); return i < 0 ? null : {sonarr: l.slice(0, i).trim(), threecat: l.slice(i + 1).trim()}; }).filter(a => a && a.sonarr && a.threecat);
       else if (el.type === "checkbox") x[f] = el.checked;
       else x[f] = el.value.trim();
     });

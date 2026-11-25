@@ -3,7 +3,7 @@ import time
 from xml.sax.saxutils import escape
 
 from . import config, db, naming
-from .providers import ardzdf, mediathek, site, youtube
+from .providers import ardzdf, mediathek, site, threecat, youtube
 from .runtime import set_status, clear_status
 
 log = logging.getLogger("streamarr.indexers")
@@ -40,16 +40,19 @@ def refresh_indexer(idx, force=False):
     return total
 
 
-def search(idx, text, limit=100, offset=0):
-    """Search one indexer. Returns cache item dicts. Also records stats."""
+def search(idx, text, limit=100, offset=0, season=None):
+    """Search one indexer. Returns cache item dicts. Also records stats.
+    `season` is only meaningful for providers that can filter by it (3cat)."""
     db.stat(idx["id"], "search", text or "")
     provider = idx["provider"]
-    if provider in ("mediathek", "ard", "zdf"):
-        label = {"mediathek": "Mediathek", "ard": "ARD", "zdf": "ZDF"}[provider]
+    if provider in ("mediathek", "ard", "zdf", "3cat"):
+        label = {"mediathek": "Mediathek", "ard": "ARD", "zdf": "ZDF", "3cat": "3cat"}[provider]
         set_status(f"Searching {label}: {text or 'latest'}")
         try:
             if provider == "mediathek":
                 items = mediathek.search(text, idx["id"], limit=limit, offset=offset)
+            elif provider == "3cat":
+                items = threecat.search(text, idx, limit=limit, season=season)
             else:
                 items = ardzdf.search(provider, text, idx, limit=limit)
             db.cache_upsert(items)

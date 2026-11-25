@@ -203,7 +203,7 @@ def test_second_chance_search_by_episode_title(mock_arr, logged_in, api_key, mon
               "duration": 1200, "ordinal": None, "meta": {"exact_date": True}}
     real_search = indexers.search
 
-    def fake_search(idx, text, limit=100, offset=0):
+    def fake_search(idx, text, limit=100, offset=0, season=None):
         if "Scariest" in (text or ""):     # second-chance query = episode title
             return [hidden]
         return []                          # series search finds nothing

@@ -107,7 +107,7 @@ def test_season_no_hard_cap(mock_arr, logged_in, api_key, monkeypatch):
         {"series": "Veritasium", "title": e["title"], "airDate": e["airDate"],
          "episode": e["episodeNumber"]} for e in eps])
 
-    def fake_search(idx, text, limit=100, offset=0):
+    def fake_search(idx, text, limit=100, offset=0, season=None):
         # every per-episode search returns exactly its item
         for e in eps:
             if e["title"] in (text or ""):

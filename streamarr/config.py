@@ -68,6 +68,7 @@ INDEXER_DEFAULTS = {
     "naming": "absolute",        # absolute | date | auto (mediathek: parse SxxEyy, fallback date)
     "categories": [5000],
     "broad_search": False,       # youtube: allow arbitrary ytsearch beyond channel list
+    "aliases": [],               # 3cat: [{sonarr, threecat}] titles used when the Sonarr title isn't on 3cat
     "channels": [],              # [{title, url}] — for site providers: any yt-dlp listable URL
     "site_preset": "",           # providers/site.py preset id (provider == "site")
     "search_template": "",       # override search URL, {query} placeholder

@@ -34,8 +34,9 @@ def newznab_api(indexer_id: str, request: Request, _=Depends(auth.require_api_ke
         text = q.get("q", "") or " ".join(
             v for v in (q.get("artist"), q.get("album"), q.get("author"), q.get("title")) if v)
         offset = int(q.get("offset", 0) or 0)
+        season = int(q["season"]) if q.get("season") else None
         try:
-            items = indexers.search(idx, text, limit=limit, offset=offset)
+            items = indexers.search(idx, text, limit=limit, offset=offset, season=season)
         except Exception as exc:
             raise HTTPException(502, f"Upstream provider error: {exc}")
         season, ep = q.get("season"), q.get("ep")

@@ -83,7 +83,7 @@ Paste a channel / playlist / model URL, get automatic downloads:
 
 | Area | Details |
 |---|---|
-| Providers | YouTube (channels + search), MediathekViewWeb, ARD/ZDF direct, 35+ site presets, fully custom yt-dlp mode |
+| Providers | YouTube (channels + search), MediathekViewWeb, ARD/ZDF direct, 3cat (Catalan public TV) direct, 35+ site presets, fully custom yt-dlp mode |
 | Indexer API | `/newznab/<id>/api` — caps, search, tvsearch (incl. season → per-episode expansion), movie, music (artist/album), book |
 | Download client | `/sabnzbd/api` — queue, history, addfile, pause/resume, priorities (Force → Lowest), speed limit |
 | Music | Lidarr-ready: music grabs are auto-extracted to audio (MP3/M4A/…), YouTube Music preset included |

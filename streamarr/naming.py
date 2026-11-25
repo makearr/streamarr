@@ -49,6 +49,8 @@ def release_title(item, scheme, quality_tag="WEBDL-1080p"):
         se = parse_sxxeyy(title)
         if se:
             s, e = se
+            # drop a leading SxxEyy tag already in the source title so it isn't repeated
+            title = re.sub(r"^S\d{1,2}E\d{1,3}\s*-\s*", "", title, flags=re.I)
             return f"{series} - S{s:02d}E{e:03d} - {title} [{quality_tag}]{GROUP}"
         scheme = "date"  # sxxeyy items without a parseable tag are filtered out at search time
     if scheme == "absolute" and item.get("ordinal"):
